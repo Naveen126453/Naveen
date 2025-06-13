@@ -1,0 +1,753 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "version": "2.1.1",
+  "definitions": {
+    "picmode_src_format": {
+      "$comment": "pic mode, video src, video fmt",
+      "type": "array",
+      "items": [
+        {
+          "type": "string", 
+          "enum": ["std", "vivid", "theater", "energysav", "sports", "game", "filmmaker", "custom" ],
+          "default": null
+        },
+        {
+          "type": "string",
+          "enum": ["Global", "HDMI1", "HDMI2", "HDMI3", "Composite1", "IP", "Tuner"],
+          "default": null
+        },
+        {
+          "type": "string",
+          "enum": ["Global", "HDR10", "SDR", "DV", "HLG", "HDR10PLUS"],
+          "default": null
+        }
+      ],
+      "maxItems": 3 
+    }
+  },
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "enum": ["2.1.1"]
+    },
+    "picture/picturemode": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          {
+            "type": "string",
+            "enum": ["std", "vivid", "theater", "energysav", "sports", "game", "filmmaker", "custom" ]
+          },
+          {"$ref": "#/definitions/picmode_src_format/items/1"},
+          {"$ref": "#/definitions/picmode_src_format/items/2"}
+        ],
+        "minItems": 1,
+        "maxItems": 3
+      }, 
+      "minItems": 1
+    },
+    "picture/autobacklight": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["on", "off"]
+          }]},
+      "minItems": 1
+    },
+    "picture/backlightbrightness": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },
+    "picture/aspectratio": {
+      "$comment": "Same as zoom setting",
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["auto", "fittoscrn", "4:3", "zoom", "direct"]
+          }]},
+      "minItems": 1
+    },
+    "picture/hdrmode": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["bright", "dark"]
+          }]},
+      "minItems": 1
+    },
+    "picture/dolbyvisionmode": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          {"$ref": "#/definitions/picmode_src_format/items/0"},
+          {"$ref": "#/definitions/picmode_src_format/items/1"},
+          {
+            "type": "string",
+            "enum": ["bright", "dark", "game"]
+          }],
+        "minItems": 1,
+        "maxItems": 3
+      }, 
+      "minItems": 1
+    },
+    "picture/resolution": {
+        "type": "string",
+        "enum": ["480p","576p","720p","1080i","1080p","2160p"]
+    },
+    "picture/streamingformat": {
+        "type": "string",
+        "enum": ["auto", "UHD", "HD"]
+    },
+    "picture/judderreduction": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "picture/dolbyvisionalert": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "picture/autodetectfilmmakermode": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "hdmi/autolowlatencymodesupport": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["on", "off"]
+          }]},
+      "minItems": 1
+    },
+    "picture/lowlatencystate": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["on", "off"]
+          }]},
+      "minItems": 1
+    },
+    "picture/contrast": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },
+    "picture/sharpness": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },
+    "picture/brightness": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },
+    "picture/colorsaturation": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },
+    "picture/hue": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },
+    "picture/colortemperature": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["warm", "standard", "cool", "cooler", "custom"]
+          }]},
+      "minItems": 1
+    },
+    "picture/wb/gain": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["warm", "standard", "cool", "custom"]
+          },
+          {
+            "type": "string",
+            "enum": ["red", "green", "blue"]
+          },
+          {
+            "type": "number",
+            "minimum": -250,
+            "maximum": 250
+          }]},
+      "minItems": 1
+    },
+    "picture/wb/offset": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["warm", "standard", "cool", "custom"]
+          },
+          {
+            "type": "string",
+            "enum": ["red", "green", "blue"]
+          },
+          {
+            "type": "number",
+            "minimum": -50,
+            "maximum": 50
+          }]},
+      "minItems": 1
+    },
+    "picture/localdimming": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["on", "off"]
+          }]},
+      "minItems": 1
+    },
+    "picture/colorspace": {
+      "type": "string",
+      "enum": ["red", "green", "blue", "yellow", "cyan", "magenta"]
+    },
+    "picture/cms/saturation": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["red", "green", "blue", "yellow", "cyan", "magenta"]
+          },
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },    
+
+    "picture/cms/luma": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["red", "green", "blue", "yellow", "cyan", "magenta"]
+          },
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 30
+          }]},
+      "minItems": 1
+    },
+    "picture/cms/hue": {
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          { "$ref": "#/definitions/picmode_src_format"},
+          {
+            "type": "string",
+            "enum": ["red", "green", "blue", "yellow", "cyan", "magenta"]
+          },
+          {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100
+          }]},
+      "minItems": 1
+    },
+    "sound/latenightmode": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "sound/enhancespeech": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "sound/bassboost": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": [ 
+        {
+          "$comment": "0 - 12 on Glass 1, 0 - 100 on all Xumo Products, 0 considered off and others on",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 100
+        },
+        {
+          "type": "string",
+          "enum": ["HDMI0", "SPEAKER0","SPDIF0"],
+          "default": null 
+        }
+        ],
+        "minItems": 1,  
+        "maxItems": 2
+      } 
+    },
+    "sound/audiooutput": {
+      "type": "string",
+      "enum": ["tv-speakers", "bluetooth-device", "bluetooth-and-tv", "audiojack-headphones", "audiojack-speaker"]
+    },
+    "sound/audiolanguage": {
+      "$comment": "Follows ISO 639-2/B codes",
+      "type": "string"
+    },
+    "sound/autovolumecorrection": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "sound/dolbyvolume": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "sound/dynamicsound": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10
+    },
+    "sound/hdmi/earc/audioformat": {
+      "$comment": "TV only",
+      "type": "string",
+      "enum": ["auto", "pcmstereo", "passthrough"]
+    },
+    "sound/hdmi/audioformat": {
+      "$comment": "STB only",
+      "type": "string",
+      "enum": ["auto", "digitaldolbyplus", "dolbydigital", "pcmstereo", "passthrough"]
+    },
+    "sound/opticalformat": {
+      "$comment": "TV or STB",
+      "type": "string",
+      "enum": ["auto", "pcmstereo", "passthrough"]
+    },
+    "sound/hdmi/earc/audiodelay": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 200,
+      "multipleOf": 20
+    },
+    "sound/hdmi/audiodelay": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 200,
+      "multipleOf": 20
+    },
+    "input/default": {
+      "type": "string",
+      "enum": ["home", "lastusedinput", "antenna", "hdmi1", "hdmi2", "hdmi3", "composite"]
+    },
+    "input/lastused": {
+      "type": "string",
+      "enum": ["antenna", "hdmi1", "hdmi2", "hdmi3", "composite"]
+    },
+    "sound/virtualsurroundsound": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "accessibility/audiodescription": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "accessibility/beeponaudiodescription": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "accessibility/subtitles": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "accessibility/highlightprogrammes": {
+      "type": "string",
+      "enum": ["option_none", "option_ad", "option_s", "option_sl"]
+    },
+    "accessibility/highcontrastui": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "accessibility/screenmagnifier": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "accessibility/voiceguidance": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "accessibility/voiceguidancespeed": {
+      "type": "string",
+      "enum": ["slow", "medium", "fast", "faster", "fastest"]
+    },
+    "accessibility/voiceguidancehints": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "parental/familyfriendlysettings": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "parental/pinonpurchase": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "parental/pinprotectionoption": {
+      "type": "string",
+      "enum": ["standard", "individual", "never"]
+    },
+    "parental/viewrestrictions/ustv": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "rating": {
+            "type": "string",
+            "enum": ["TV-Y", "TV-Y7", "TV-G", "TV-PG" ,"TV-14" ,"TV-MA"]
+          },
+          "subratings": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["FV", "V", "L", "S", "D"]
+            },
+            "uniqueItems": true
+          }
+        },
+        "required": ["rating"],
+        "uniqueItemProperties": ["value"]
+      }
+    },
+    "parental/viewrestrictions/mpaa": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["G", "PG", "PG-13", "R", "NC-17"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "parental/viewrestrictions/catv/en": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["E", "C", "C8", "G", "PG", "14+", "18+"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "parental/viewrestrictions/catv/fr": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["E", "G", "8+", "13+", "16+", "18+"]
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "parental/blocknotratedcontent": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "parental/apps/enforcepin": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "parental/apps/enforceexception": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parental/parentalctrlpin": {
+      "$comment": "Used as purchase pin as well",
+      "type": "string",
+      "pattern": "^[0-9]{4}$"
+    },
+    "preferences/fullexperience/enhancedexperience": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/fullexperience/wakebymotionconfig": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/fullexperience/wakebycastingconfig": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/fullexperience/autostandbyusingmotion": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/fullexperience/networkstandbyconfig": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/system/overnightpowersavings": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/system/sleeptimer": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 240,
+      "multipleOf": 15
+    },
+    "preferences/system/autostandbytimeout": {
+      "type": "string",
+      "enum": ["0", "2", "4", "8", "12"]
+    },
+    "preferences/play/autoplay": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/privacy/personalization": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/privacy/continuewatching": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "onstartup/system/defaulttolivetv": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "onstartup/guide/defaultguidechannel": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "hdmi/hdmicontrol": {
+      "type": "string",
+      "enum": ["on", "offf"]
+    },
+    "hdmi/onetouchplay": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "hdmi/olderdevicecompatibility": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "hdmi/compatibility": {
+      "$comment": "port id, edidVersion",
+      "type": "array",
+      "items": { 
+        "type": "array",
+        "items": [
+          {
+            "type": "number"
+          },
+          {
+            "type": "string",
+            "enum": ["HDMI1.4", "HDMI2.0"]
+          }
+        ]
+      }
+    },
+    "closedcaptions/preferredlanguage": {
+      "$comment": "Follows ISO 639-2/B codes",
+      "type": "string"
+    },
+    "closedcaptions/preferredccservice": {
+      "type": "string",
+      "anyOf": [
+        {
+          "pattern": "^CC[1-4]$"
+        },
+        {
+          "pattern": "^TEXT[1-4]$"
+        },
+        {
+          "pattern": "^SERVICE([1-9]|[1-5][0-9]|6[0-4])$"
+        },
+        { "const": "AUTO" }
+      ]
+    },
+    "closedcaptions/customizedcaptionstyle": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "closedcaptions/fontsize": {
+      "type": "string",
+      "enum": ["small", "medium", "large", "extra-large"]
+    },
+    "closedcaptions/fontstyle": {
+      "type": "string",
+      "enum": ["ms-serif", "ms-sans-serif", "pr-serif", "pr-sans-serif", "casual", "cursive", "smallcaps"]
+    },
+    "closedcaptions/fontcolor": {
+      "type": "string",
+      "pattern": "^#([A-Fa-f0-9]{6})$"
+    },
+    "closedcaptions/fontopacity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100 
+    },
+    "closedcaptions/fontedgestyle": {
+      "type": "string",
+      "enum": ["none", "raised", "depressed", "uniform", "leftdropshadow", "rightdropshadow"]
+    },
+    "closedcaptions/fontedgecolor": {
+      "type": "string",
+      "pattern": "^#([A-Fa-f0-9]{6})$"
+    },
+    "closedcaptions/backgroundcolor": {
+      "type": "string",
+      "pattern": "^#([A-Fa-f0-9]{6})$"
+    },
+    "closedcaptions/backgroundopacity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100 
+    },
+    "closedcaptions/windowcolor": {
+      "type": "string",
+      "pattern": "^#([A-Fa-f0-9]{6})$"
+    },
+    "closedcaptions/windowopacity": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100 
+    },
+    "system/timezone": {
+      "type": "string",
+      "enum": ["America/Puerto_Rico", "America/New_York", "America/Chicago", "America/Denver", "America/Phoenix",
+              "America/Los_Angeles", "America/Anchorage", "America/Adak", "America/St_Johns", "Pacific/Honolulu",
+              "Pacific/Pago_Pago", "Pacific/Guam", "Canada/Newfoundland", "Pacific/Samoa"]
+    },
+    "system/presentationlanguage": {
+      "$comment": "a full BCP 47 value",
+      "type": "string"
+    },
+    "system/devicelocation": {
+      "type": "string"
+    },
+    "system/enableretailmode": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/system/standbyled": {
+      "type": "string",
+      "enum": ["on", "off"]
+    },
+    "preferences/approworder": {
+      "$comment": "Durable AppIds",
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "network/wifi": {
+      "$comment": "ssid, passphrase, security mode",
+      "type": "array",
+      "items": [
+        {
+          "type": "string" 
+        },
+        {
+          "type": "string"
+        },
+        {
+          "type": "string",
+          "enum": ["WIFI_SECURITY_NONE", "WIFI_SECURITY_WEP_64", "WIFI_SECURITY_WEP_128", "WIFI_SECURITY_WPA_PSK_TKIP", 
+                  "WIFI_SECURITY_WPA_PSK_AES", "WIFI_SECURITY_WPA2_PSK_TKIP", "WIFI_SECURITY_WPA2_PSK_AES", "WIFI_SECURITY_WPA_ENTERPRISE_TKIP",
+                  "WIFI_SECURITY_WPA_ENTERPRISE_AES", "WIFI_SECURITY_WPA2_ENTERPRISE_TKIP", "WIFI_SECURITY_WPA2_ENTERPRISE_AES",
+                  "WIFI_SECURITY_WPA_WPA2_PSK", "WIFI_SECURITY_WPA_WPA2_ENTERPRISE", "WIFI_SECURITY_WPA3_PSK_AES", "WIFI_SECURITY_WPA3_SAE"]
+        }
+      ],
+      "minItems": 3, 
+      "maxItems": 3 
+    }
+  },
+  "required": ["schemaVersion"]
+}
