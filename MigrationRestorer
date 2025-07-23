@@ -1,0 +1,169 @@
+MigrationRestorer Plugin Description
+The MigrationRestorer plugin is a Thunder (WPEFramework) plugin designed to restore device settings after migration or onboarding. Its main purpose is to ensure that user preferences and system configurations are seamlessly transferred and applied on a device, typically after a factory reset, upgrade, or migration from another device.
+
+Key Responsibilities
+Loading Migration Data:
+Reads a JSON file containing migrated settings (e.g., display, audio, accessibility, parental controls, HDMI, and system info) from a secure location on the device.
+
+Schema Validation:
+Loads a JSON schema file and validates each setting in the migration data against this schema to ensure correctness and compatibility.
+
+Applying Settings:
+Applies validated settings to the device using platform APIs and Thunder plugin interfaces. For example, it uses IUserSettings for user preferences and IHdmiCecSink for HDMI-related settings.
+
+API Exposure:
+Exposes JSON-RPC methods (such as ApplyDisplaySettings) so other components or remote clients can trigger the restoration of settings.
+
+Component Readiness:
+Tracks which subsystems are ready to receive settings, ensuring that settings are only applied when appropriate.
+
+Error Handling and Logging:
+Includes robust error handling and logging for troubleshooting and auditing migration operations.
+
+Main Features
+Initialization:
+On startup, loads migration data and schema, validates all entries, and prepares for restoration.
+
+Validation:
+Ensures only valid and supported settings are applied, preventing misconfiguration.
+
+Extensibility:
+Designed to support additional settings and components as needed.
+
+Security:
+Operates on secure data paths and validates all input to prevent unauthorized or malformed settings from being applied.
+
+Typical Use Case
+After a device migration, a management system or user triggers the plugin (via JSON-RPC) to restore all relevant settings. The plugin validates and applies each setting, ensuring the device is configured as expected for the user.
+
+Summary:
+The MigrationRestorer plugin automates and secures the restoration of device settings after migration, ensuring a smooth and consistent user experience. 
+It is modular, extensible, and integrates tightly with the Thunder framework and platform APIs.
+
+
+
+
+-------------------------------------------
+
+
+
+MigrationRestorer.h
+This header defines the MigrationRestorer plugin class for WPEFramework. Key points:
+
+Inheritance:
+Inherits from PluginHost::IPlugin and PluginHost::JSONRPC, making it a Thunder plugin with JSON-RPC API support.
+
+Core Methods:
+
+Initialize, Deinitialize, Information: Standard plugin lifecycle methods.
+RegisterAll, UnregisterAll: Register/unregister JSON-RPC methods.
+PopulateMigrationDataStore, PopulateMigrationDataStoreSchema, ValidateMigrationDataStore: Load and validate migration data and schema.
+ApplyDisplaySettings: Main API to apply validated settings.
+Data Members:
+
+Maps for input data and schema (inputMap, schemaMap).
+List of validated keys (validatedkeys).
+Pointers to plugin interfaces for user settings and HDMI CEC sink.
+MigrationRestorer.cpp
+This file implements the logic for the plugin. Main flow:
+
+Constructor:
+
+Loads migration data from a JSON file and schema from another JSON file.
+Validates each setting in the data store against the schema, storing valid keys.
+Data Loading:
+
+PopulateMigrationDataStore: Reads and parses migration data JSON, populates inputMap.
+PopulateMigrationDataStoreSchema: Reads and parses schema JSON, populates schemaMap.
+Validation:
+
+ValidateMigrationDataStore: For each key in the input, checks if it exists in the schema and validates its value using validateValue.
+validateValue: Recursively checks types, enums, ranges, and references in the schema.
+Applying Settings:
+
+ApplyDisplaySettings: Iterates over validated keys and applies each setting using platform APIs or Thunder plugin interfaces.
+Handles settings like resolution, audio, accessibility, parental controls, HDMI control, device location, and zoom.
+Uses helper plugins (IUserSettings, IHdmiCecSink) for some settings.
+Plugin Lifecycle:
+
+Initialize and Deinitialize manage plugin startup/shutdown and resource cleanup.
+Summary:
+The MigrationRestorer plugin loads device settings from a migration data store, validates them against a schema, 
+and applies them to the device using platform and Thunder APIs. The header defines the structure and API,
+while the implementation handles data parsing, validation, and application logic.
+
+
+----------------------------------------------------------
+
+Purpose
+This CMake file configures the build process for the MigrationRestorer Thunder plugin. It sets up plugin properties, finds dependencies, compiles source files, links libraries, and installs the plugin.
+
+Breakdown
+1. License and Metadata
+The top section contains copyright and license information.
+
+2. Plugin Variables
+set(PLUGIN_NAME MigrationRestorer)
+set(MODULE_NAME ${NAMESPACE}${PLUGIN_NAME})
+Sets the plugin name and module name (usually prefixed by a namespace).
+3. Plugin Configuration Options
+set(PLUGIN_MIGRATIONRESTORER_AUTOSTART "true" CACHE STRING "Automatically start plugin")
+set(PLUGIN_MIGRATIONRESTORER_STARTUPORDER "" CACHE STRING "To configure startup order of plugin")
+set(PLUGIN_MIGRATIONRESTORER_MODE "Off" CACHE STRING "Controls if the plugin should run in process or out of process")
+Controls plugin startup behavior and mode (in-process or out-of-process).
+4. Module Path
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+Adds a custom cmake directory to the module search path.
+5. Dependency Discovery
+find_package(${NAMESPACE}Plugins REQUIRED)
+find_package(${NAMESPACE}Definitions REQUIRED)
+find_package(DS)
+find_package(IARMBus)
+find_package(RFC)
+find_package(CompileSettingsDebug CONFIG REQUIRED)
+Finds required packages and libraries for Thunder plugins, device settings (DS), IARM bus, RFC, and debug compile settings.
+6. Source Files and Library Creation
+add_library(${MODULE_NAME} SHARED
+    MigrationRestorer.cpp
+    Module.cpp)
+Builds a shared library from the main source files.
+7. Compiler Properties
+set_target_properties(${MODULE_NAME} PROPERTIES
+        CXX_STANDARD 11
+        CXX_STANDARD_REQUIRED YES)
+set_source_files_properties(MigrationRestorer.cpp PROPERTIES COMPILE_FLAGS "-fexceptions")
+Sets C++ standard to C++11 and enables exception handling for the main source file.
+8. Linking Libraries
+target_link_libraries(${MODULE_NAME}
+    PRIVATE
+        CompileSettingsDebug::CompileSettingsDebug
+        ${NAMESPACE}Plugins::${NAMESPACE}Plugins
+        ${NAMESPACE}Definitions::${NAMESPACE}Definitions
+        ${DS_LIBRARIES}
+        ${IARMBUS_LIBRARIES}
+        ${RFC_LIBRARIES} "-ltr181api")
+Links the plugin against Thunder, DS, IARM, RFC, and TR-181 API libraries.
+9. Include Directories
+target_include_directories(${MODULE_NAME} PRIVATE
+        ${DS_INCLUDE_DIRS}
+        ${IARMBUS_INCLUDE_DIRS}
+        ${RFC_INCLUDE_DIRS}
+        ../helpers)
+Adds include paths for dependencies and helper headers.
+10. Environment Includes
+set(MIGRATIONRESTORER_INCLUDES $ENV{MIGRATIONRESTORER_INCLUDES})
+separate_arguments(MIGRATIONRESTORER_INCLUDES)
+include_directories(BEFORE ${MIGRATIONRESTORER_INCLUDES})
+
+Allows additional include directories to be specified via environment variable.
+11. Installation
+install(TARGETS ${MODULE_NAME}
+        DESTINATION lib/${STORAGE_DIRECTORY}/plugins)
+Installs the built plugin library to the plugins directory.
+12. Plugin Configuration
+write_config(${PLUGIN_NAME})
+Generates a configuration file for the plugin (Thunder-specific macro).
+
+Summary
+This CMake file automates building, linking, and installing the MigrationRestorer plugin, 
+ensuring all dependencies are found and configured, and the plugin is ready for Thunder deployment.
