@@ -167,3 +167,195 @@ Generates a configuration file for the plugin (Thunder-specific macro).
 Summary
 This CMake file automates building, linking, and installing the MigrationRestorer plugin, 
 ensuring all dependencies are found and configured, and the plugin is ready for Thunder deployment.
+
+
+------------------------------------------------------------------------------
+
+Here is a detailed description of every function present in MigrationRestorer.cpp file:
+
+1. MigrationRestorer::MigrationRestorer()
+Purpose: Constructor for the plugin.
+Logic:
+Logs startup messages.
+Calls PopulateMigrationDataStore() to load migration data.
+Calls PopulateMigrationDataStoreSchema() to load the schema.
+Calls ValidateMigrationDataStore() to validate the loaded data against the schema.
+2. MigrationRestorer::~MigrationRestorer()
+Purpose: Destructor for the plugin.
+Logic:
+Logs shutdown messages.
+Releases the _userSettingsPlugin interface if it was acquired.
+3. PopulateMigrationDataStore()
+Purpose: Loads migration data from a JSON file.
+Logic:
+Opens the migration data store file.
+Reads its contents into memory.
+Parses the JSON and stores each top-level item in the inputMap for later use.
+4. PopulateMigrationDataStoreSchema()
+Purpose: Loads the schema for migration data validation.
+Logic:
+Opens the schema file.
+Reads its contents into memory.
+Parses the JSON and stores each property in the schemaMap for validation.
+Keeps the root schema in schemaRoot.
+5. ValidateMigrationDataStore()
+Purpose: Validates migration data against the schema.
+Logic:
+Iterates through each key in inputMap.
+Checks if the key exists in the schema.
+Calls validateValue() to validate the value against the schema.
+If valid, adds the key to validatedkeys.
+6. Initialize(PluginHost::IShell service)*
+Purpose: Initializes the plugin when loaded by Thunder.
+Logic:
+Logs initialization.
+Stores the service pointer.
+Registers all JSON-RPC methods.
+Returns an empty string on success.
+7. Deinitialize(PluginHost::IShell service)*
+Purpose: Cleans up the plugin when unloaded.
+Logic:
+Logs deinitialization.
+Unregisters all JSON-RPC methods.
+Releases the service pointer.
+8. Information() const
+Purpose: Returns plugin information.
+Logic:
+Returns a JSON string with the plugin’s service name.
+9. RegisterAll()
+Purpose: Registers JSON-RPC methods.
+Logic:
+Registers ApplyDisplaySettings and ApplyClosedCaptionsSettings methods.
+10. UnregisterAll()
+Purpose: Unregisters JSON-RPC methods.
+Logic:
+Placeholder for unregister logic (currently just logs).
+11. resolveRef(const std::string& ref)
+Purpose: Resolves $ref references in the schema.
+Logic:
+Parses the reference string.
+Navigates the schema to find the referenced definition.
+Returns the resolved schema node.
+12. validateValue(cJSON value, cJSON schema)**
+Purpose: Validates a value against a schema node.
+Logic:
+Handles $ref by resolving and recursively validating.
+Checks type (string, number, integer, array, object).
+For strings, checks enum values.
+For numbers, checks min/max constraints.
+For arrays, validates each item.
+For objects, currently skips validation.
+Returns true if valid, false otherwise.
+13. stringToFontFamily(const string& str)
+Purpose: Converts a string to a font family enum.
+Logic:
+Maps string values to FontFamily enum values.
+14. stringToFontSize(const string& str)
+Purpose: Converts a string to a font size enum.
+Logic:
+Maps string values to FontSize enum values.
+15. stringToFontEdge(const string& str)
+Purpose: Converts a string to a font edge enum.
+Logic:
+Maps string values to FontEdge enum values.
+16. ApplyClosedCaptionsSettings(const JsonObject& parameters, JsonObject& response)
+Purpose: Applies closed captions settings from migration data.
+Logic:
+Iterates through validated keys related to closed captions.
+For each setting, activates the TextTrack plugin if needed.
+Sets font style, size, color, opacity, edge style, background color, window color, etc., using the plugin interface.
+17. stringToDouble(string str)
+Purpose: Converts a string to a double value for voice guidance speed.
+Logic:
+Maps string values like "slow", "medium", "fast" to corresponding double values.
+18. ApplyDisplaySettings(const JsonObject& parameters, JsonObject& response)
+Purpose: Applies display and other device settings from migration data.
+Logic:
+Iterates through validated keys.
+For each key, applies the corresponding setting:
+Display resolution: Uses device API to set resolution.
+Audio: Sets Dolby volume mode.
+Accessibility: Sets voice guidance, closed captions, voice guidance speed.
+System: Sets presentation language, device location.
+Parental controls: Sets PIN control and PIN on purchase.
+HDMI: Enables/disables HDMI control.
+Picture zoom: Sets zoom setting.
+Closed captions: Sets window opacity (also handled in closed captions settings).
+Summary:
+The functions in MigrationRestorer.cpp work together to load, validate, and apply migrated device settings
+using Thunder plugin interfaces and platform APIs. Each function has a clear responsibility in the migration and restoration workflow.
+
+----------------------------------------------------------------------
+
+Here are all the settings that the MigrationRestorer plugin is applying:
+
+Display Settings
+picture/resolution
+Sets the video output resolution.
+
+picture/zoomsetting
+Sets the picture zoom mode (DFC).
+
+Audio Settings
+sound/dolbyvolume
+Enables or disables Dolby Volume mode on the audio output.
+Accessibility Settings
+accessibility/voiceguidance
+Enables or disables voice guidance.
+
+accessibility/voiceguidancespeed
+Sets the speed of voice guidance.
+
+accessibility/closedcaption
+Enables or disables closed captions.
+
+Closed Captions Style Settings
+closedcaptions/fontstyle
+Sets the font family for closed captions.
+
+closedcaptions/fontsize
+Sets the font size for closed captions.
+
+closedcaptions/fontcolor
+Sets the font color for closed captions.
+
+closedcaptions/fontopacity
+Sets the font opacity for closed captions.
+
+closedcaptions/fontedgestyle
+Sets the font edge style for closed captions.
+
+closedcaptions/fontedgecolor
+Sets the font edge color for closed captions.
+
+closedcaptions/backgroundcolor
+Sets the background color for closed captions.
+
+closedcaptions/backgroundopacity
+Sets the background opacity for closed captions.
+
+closedcaptions/windowcolor
+Sets the window color for closed captions.
+
+closedcaptions/windowopacity
+Sets the window opacity for closed captions.
+
+System Settings
+system/presentationlanguage
+Sets the device presentation language.
+
+system/devicelocation
+Sets the device friendly name/location.
+
+Parental Control Settings
+parental/parentalctrlpin
+Enables or disables parental control PIN.
+
+parental/pinonpurchase
+Enables or disables PIN requirement on purchase.
+
+HDMI Settings
+hdmi/hdmicontrol
+Enables or disables HDMI CEC control.
+Summary:
+The plugin restores display, audio, accessibility, closed captions, system, parental, and HDMI settings from migration data.
