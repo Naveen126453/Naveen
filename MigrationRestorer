@@ -1,5 +1,8 @@
-MigrationRestorer Plugin Description
-The MigrationRestorer plugin is a Thunder (WPEFramework) plugin designed to restore device settings after migration or onboarding. Its main purpose is to ensure that user preferences and system configurations are seamlessly transferred and applied on a device, typically after a factory reset, upgrade, or migration from another device.
+MigrationRestorer Plugin :
+
+The MigrationRestorer plugin is a Thunder (WPEFramework) plugin designed to restore device settings after migration or onboarding. 
+Its main purpose is to ensure that user preferences and system configurations are seamlessly transferred and applied on a device, 
+typically after a factory reset, upgrade, or migration from another device.
 
 Key Responsibilities
 Loading Migration Data:
@@ -359,3 +362,33 @@ hdmi/hdmicontrol
 Enables or disables HDMI CEC control.
 Summary:
 The plugin restores display, audio, accessibility, closed captions, system, parental, and HDMI settings from migration data.
+
+
+
+
+
+Supported Settings
+The plugin can restore a wide range of settings, including:
+
+Display:
+picture/resolution
+picture/zoomsetting
+Audio:
+sound/dolbyvolume
+Accessibility:
+accessibility/voiceguidance
+accessibility/voiceguidancespeed
+accessibility/closedcaption
+Closed Captions Style:
+closedcaptions/fontstyle, fontsize, fontcolor, fontopacity, fontedgestyle, fontedgecolor, backgroundcolor, backgroundopacity, windowcolor, windowopacity
+System:
+system/presentationlanguage
+system/devicelocation
+Parental Controls:
+parental/parentalctrlpin
+parental/pinonpurchase
+HDMI:
+hdmi/hdmicontrol
+Summary
+The MigrationRestorer plugin automates and secures the restoration of device settings after migration, ensuring a smooth and consistent user experience. It is modular, extensible, and integrates tightly with the Thunder framework and platform APIs. Each function is responsible for a specific part of the migration, validation, or restoration workflow, 
+making the codebase maintainable and extensible for future requirements.
